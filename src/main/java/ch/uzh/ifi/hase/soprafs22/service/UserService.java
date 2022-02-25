@@ -41,8 +41,8 @@ public class UserService {
 
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
-    newUser.setStatus(UserStatus.OFFLINE);
-
+    newUser.setStatus(UserStatus.ONLINE);
+    checkNullPassword(newUser);
     checkIfUserExists(newUser);
 
     // saves the given entity but data is only persisted in the database once
@@ -77,5 +77,10 @@ public class UserService {
     } else if (userByName != null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "name", "is"));
     }
+  }
+  private void checkNullPassword(User user){
+      if(user.getPassword() == null){
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Password is Null"));
+      }
   }
 }
