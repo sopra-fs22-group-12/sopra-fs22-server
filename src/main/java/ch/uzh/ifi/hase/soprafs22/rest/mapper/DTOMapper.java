@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs22.rest.mapper;
 import ch.uzh.ifi.hase.soprafs22.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs22.rest.dto.UserStatusPutDTO;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -25,12 +26,23 @@ public interface DTOMapper {
   @Mapping(source = "name", target = "name")
   @Mapping(source = "username", target = "username")
   @Mapping(source = "password", target = "password")
+  @Mapping(source = "birthday", target = "birthday")
+  @Mapping(source = "id", target = "id")
   User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
   @Mapping(source = "id", target = "id")
   @Mapping(source = "name", target = "name")
   @Mapping(source = "username", target = "username")
   //@Mapping(source = "password", target = "password")
+  @Mapping(source ="token", target = "token")
   @Mapping(source = "status", target = "status")
+  @Mapping(source = "date", target = "date")
+  @Mapping(source = "birthday", target = "birthday")
   UserGetDTO convertEntityToUserGetDTO(User user);
+
+  @Mapping(source = "token",target = "token")
+  User convertUserStatusPutDTOtoEntity(UserStatusPutDTO userStatusPutDTO);
+
+  @Mapping(source = "id", target = "id")
+  User convertUserGetDTOtoEntity(UserGetDTO userGetDTO);
 }

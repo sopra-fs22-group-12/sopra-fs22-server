@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @see UserService
  */
-/**
+
 @WebAppConfiguration
 @SpringBootTest
 public class UserServiceIntegrationTest {
@@ -43,6 +43,7 @@ public class UserServiceIntegrationTest {
     User testUser = new User();
     testUser.setName("testName");
     testUser.setUsername("testUsername");
+    testUser.setPassword("password");
 
     // when
     User createdUser = userService.createUser(testUser);
@@ -51,8 +52,10 @@ public class UserServiceIntegrationTest {
     assertEquals(testUser.getId(), createdUser.getId());
     assertEquals(testUser.getName(), createdUser.getName());
     assertEquals(testUser.getUsername(), createdUser.getUsername());
+    //assertEquals(testUser.getBirthday(), createdUser.getBirthday());
+    assertEquals(testUser.getPassword(),createdUser.getPassword());
     assertNotNull(createdUser.getToken());
-    assertEquals(UserStatus.OFFLINE, createdUser.getStatus());
+    assertEquals(UserStatus.ONLINE, createdUser.getStatus());
   }
 
   @Test
@@ -62,6 +65,7 @@ public class UserServiceIntegrationTest {
     User testUser = new User();
     testUser.setName("testName");
     testUser.setUsername("testUsername");
+    testUser.setPassword("password");
     User createdUser = userService.createUser(testUser);
 
     // attempt to create second user with same username
@@ -70,9 +74,9 @@ public class UserServiceIntegrationTest {
     // change the name but forget about the username
     testUser2.setName("testName2");
     testUser2.setUsername("testUsername");
+    testUser2.setPassword("password");
 
     // check that an error is thrown
     assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser2));
   }
 }
-*/

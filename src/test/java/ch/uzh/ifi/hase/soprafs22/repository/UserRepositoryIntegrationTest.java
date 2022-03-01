@@ -7,9 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-/**
+
 @DataJpaTest
 public class UserRepositoryIntegrationTest {
 
@@ -25,8 +30,13 @@ public class UserRepositoryIntegrationTest {
     User user = new User();
     user.setName("Firstname Lastname");
     user.setUsername("firstname@lastname");
+    user.setPassword("password");
     user.setStatus(UserStatus.OFFLINE);
     user.setToken("1");
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    Date today = Calendar.getInstance().getTime();
+    //String reportDate = df.format(today);
+    user.setDate(today);
 
     entityManager.persist(user);
     entityManager.flush();
@@ -38,7 +48,9 @@ public class UserRepositoryIntegrationTest {
     assertNotNull(found.getId());
     assertEquals(found.getName(), user.getName());
     assertEquals(found.getUsername(), user.getUsername());
+    assertEquals(found.getPassword(), user.getPassword());
+    assertEquals(found.getDate(),user.getDate());
     assertEquals(found.getToken(), user.getToken());
     assertEquals(found.getStatus(), user.getStatus());
   }
-}*/
+}

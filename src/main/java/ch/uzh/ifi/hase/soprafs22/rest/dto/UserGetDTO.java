@@ -1,13 +1,21 @@
 package ch.uzh.ifi.hase.soprafs22.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs22.constant.UserStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Date;
 
 public class UserGetDTO {
 
   private Long id;
   private String name;
   private String username;
+  //@JsonProperty("logged_in")
   private UserStatus status;
+  //@JsonProperty("creation_date")
+  private Date date;
+  private Date birthday;
+  private String token;
 
   public Long getId() {
     return id;
@@ -40,4 +48,28 @@ public class UserGetDTO {
   public void setStatus(UserStatus status) {
     this.status = status;
   }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
+    }
 }
