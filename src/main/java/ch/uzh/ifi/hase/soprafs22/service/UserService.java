@@ -12,8 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.UUID;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * User Service
@@ -41,8 +42,15 @@ public class UserService {
 
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
-    newUser.setStatus(UserStatus.OFFLINE);
+    newUser.setStatus(UserStatus.ONLINE);
 
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    Date today = Calendar.getInstance().getTime();
+    //String reportDate = df.format(today);
+    newUser.setDate(today);
+      System.out.println(today);
+
+    checkNullPassword(newUser);
     checkIfUserExists(newUser);
 
     // saves the given entity but data is only persisted in the database once
@@ -52,6 +60,54 @@ public class UserService {
 
     log.debug("Created Information for User: {}", newUser);
     return newUser;
+  }
+  public User authanticateUser(User newUser) {
+      User userByUsername = userRepository.findByUsername(newUser.getUsername());
+      if(userByUsername == null){
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Username not found"));
+      }
+      if(!userByUsername.getPassword().equals(newUser.getPassword()) ){
+          System.out.println("From Database: " + userByUsername.getPassword());
+          System.out.println("From Frontend: " + newUser.getPassword());
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Password is incorrect"));
+      }
+      System.out.println(userByUsername.getToken());
+      userByUsername.setStatus(UserStatus.ONLINE);
+      updateRepository(userByUsername);
+      /**userRepository.save(newUser);
+      userRepository.flush();*/
+      return userByUsername;
+  }
+
+  public void updateRepository(User newUser){
+      userRepository.save(newUser);
+      userRepository.flush();
+  }
+
+
+  public void logout(User userToLogout){
+      userToLogout.setStatus(UserStatus.OFFLINE);
+      updateRepository(userToLogout);
+  }
+
+  public User getUserByIDNum(Long userId){
+      Optional<User> userRepo = userRepository.findById(userId);
+      User user = userRepo.orElse(null);
+      if(user == null){
+          throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("ID not found"));
+      }
+      else {
+          return user;
+      }
+  }
+
+  public void updateUsernameAndBirthday(User userToUpdate){
+      User UserToUpdateInDB = getUserByIDNum(userToUpdate.getId());
+      UserToUpdateInDB.setUsername(userToUpdate.getUsername());
+      System.out.println(userToUpdate.getBirthday());
+      //UserToUpdateInDB.getBirthday();
+      UserToUpdateInDB.setBirthday(userToUpdate.getBirthday());
+      updateRepository(UserToUpdateInDB);
   }
 
   /**
@@ -77,5 +133,10 @@ public class UserService {
     } else if (userByName != null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "name", "is"));
     }
+  }
+  private void checkNullPassword(User user){
+      if(user.getPassword() == null){
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Password is Null"));
+      }
   }
 }

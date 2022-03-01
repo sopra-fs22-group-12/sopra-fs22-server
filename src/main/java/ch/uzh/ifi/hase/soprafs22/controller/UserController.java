@@ -55,4 +55,53 @@ public class UserController {
     // convert internal representation of user back to API
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
   }
+  @PostMapping("/user/login")
+  @ResponseStatus(HttpStatus.CREATED)
+  @ResponseBody
+  public UserGetDTO loginUser(@RequestBody UserPostDTO userPostDTO) {
+      // convert API user to internal representation
+      User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+
+      System.out.println(userInput.getPassword());
+
+      // authenticate user
+      User createdUser = userService.authanticateUser(userInput);
+
+      // convert internal representation of user back to API
+      return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+    }
+
+  @PutMapping("/logout/{userId}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public void logout(@PathVariable("userId") Long userId){
+      // convert API user to internal representation
+      User user = userService.getUserByIDNum(userId);
+      userService.logout(user);
+  }
+
+  @GetMapping("/users/{userId}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public UserGetDTO getUserFromUserID(@PathVariable("userId") Long userId){
+      User user = userService.getUserByIDNum(userId);
+
+      // convert internal representation of user back to API
+      return DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+    }
+
+  @PutMapping("/users/{userId}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public void updateUserFromUserID(@PathVariable("userId") Long userId, @RequestBody UserPostDTO userPostDTO){
+      User usertoUpdate = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+
+      User userByURI = userService.getUserByIDNum(userId);
+
+      User userByLogin = userService.getUserByIDNum(usertoUpdate.getId());
+
+      System.out.println("userByLogin: " + userByLogin);
+
+      //userService.updateUsernameAndBirthday(usertoUpdate);
+    }
 }
