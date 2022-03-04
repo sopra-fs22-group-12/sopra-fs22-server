@@ -213,5 +213,5 @@ public class UserServiceIntegrationTest {
       userService.updateUsernameAndBirthday(createdUserProfile, UserRequestChange);
 
       assertEquals(createdUserProfile.getUsername(), UserRequestChange.getUsername());
-  }*/
+  }**/
 }
