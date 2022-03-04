@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -48,9 +51,12 @@ public class UserService {
     Date today = Calendar.getInstance().getTime();
     //String reportDate = df.format(today);
     newUser.setDate(today);
-      System.out.println(today);
+      //System.out.println(today);
 
     checkNullPassword(newUser);
+    String hashedPassword = hashPassword(newUser.getPassword());
+      System.out.println("Hashed Password: "+hashedPassword);
+    newUser.setPassword(hashedPassword);
     checkIfUserExists(newUser);
 
     // saves the given entity but data is only persisted in the database once
@@ -61,12 +67,15 @@ public class UserService {
     log.debug("Created Information for User: {}", newUser);
     return newUser;
   }
+
+
   public User authanticateUser(User newUser) {
       User userByUsername = userRepository.findByUsername(newUser.getUsername());
       if(userByUsername == null){
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Username not found"));
       }
-      if(!userByUsername.getPassword().equals(newUser.getPassword()) ){
+      String hashedNewUserPassword = hashPassword(newUser.getPassword());
+      if(!userByUsername.getPassword().equals(hashedNewUserPassword) ){
           System.out.println("From Database: " + userByUsername.getPassword());
           System.out.println("From Frontend: " + newUser.getPassword());
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Password is incorrect"));
@@ -79,7 +88,7 @@ public class UserService {
       return userByUsername;
   }
 
-  public void updateRepository(User newUser){
+  private void updateRepository(User newUser){
       userRepository.save(newUser);
       userRepository.flush();
   }
@@ -92,22 +101,35 @@ public class UserService {
 
   public User getUserByIDNum(Long userId){
       Optional<User> userRepo = userRepository.findById(userId);
-      User user = userRepo.orElse(null);
-      if(user == null){
+      User user;
+      try{
+          user = userRepo.orElse(null);
+          if (user == null){
+              throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("ID not found"));
+          }
+      }catch (NullPointerException e){
           throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("ID not found"));
       }
-      else {
-          return user;
+      return user;
+
+  }
+
+  public void compareUserByID(Long profileUserId, Long accountUserId){
+      if (!profileUserId.equals(accountUserId)){
+          throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format("Unauthorized for the update"));
       }
   }
 
-  public void updateUsernameAndBirthday(User userToUpdate){
-      User UserToUpdateInDB = getUserByIDNum(userToUpdate.getId());
-      UserToUpdateInDB.setUsername(userToUpdate.getUsername());
-      System.out.println(userToUpdate.getBirthday());
+  public void updateUsernameAndBirthday(User userProfile, User userRequestChange){
+      userProfile.setUsername(userRequestChange.getUsername());
+      System.out.println(userRequestChange.getBirthday());
       //UserToUpdateInDB.getBirthday();
-      UserToUpdateInDB.setBirthday(userToUpdate.getBirthday());
-      updateRepository(UserToUpdateInDB);
+      if(userRequestChange.getBirthday() != null){
+        userProfile.setBirthday(userRequestChange.getBirthday());
+      }
+      System.out.println(userProfile.getBirthday());
+      //System.out.println(userProfile.getBirthday().getClass().getName());
+      updateRepository(userProfile);
   }
 
   /**
@@ -126,17 +148,37 @@ public class UserService {
 
     String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
     if (userByUsername != null && userByName != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+      throw new ResponseStatusException(HttpStatus.CONFLICT,
           String.format(baseErrorMessage, "username and the name", "are"));
     } else if (userByUsername != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username", "is"));
+      throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(baseErrorMessage, "username", "is"));
     } else if (userByName != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "name", "is"));
+      throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(baseErrorMessage, "name", "is"));
     }
   }
   private void checkNullPassword(User user){
       if(user.getPassword() == null){
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Password is Null"));
       }
+  }
+  private String hashPassword(String passwordToHash) {
+      String hashedPassword = null;
+      try {
+          MessageDigest md = MessageDigest.getInstance("MD5");
+
+          md.update(passwordToHash.getBytes());
+
+          byte[] bytes = md.digest();
+
+          StringBuilder sb = new StringBuilder();
+          for (int i=0; i <bytes.length; i++){
+              sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+          }
+          hashedPassword = sb.toString();
+      }
+      catch (NoSuchAlgorithmException e) {
+          e.printStackTrace();
+      }
+      return hashedPassword;
   }
 }

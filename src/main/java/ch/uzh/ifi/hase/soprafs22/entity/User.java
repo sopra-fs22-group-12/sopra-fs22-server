@@ -46,6 +46,7 @@ public class User implements Serializable {
   private Date date;
 
   @Column()
+  @Temporal(TemporalType.DATE)
   private Date birthday; //change both dates to localDate
 
   public Long getId() {

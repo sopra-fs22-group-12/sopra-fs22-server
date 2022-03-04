@@ -55,8 +55,8 @@ public class UserController {
     // convert internal representation of user back to API
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
   }
-  @PostMapping("/user/login")
-  @ResponseStatus(HttpStatus.CREATED)
+  @PutMapping("/user/login")
+  @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public UserGetDTO loginUser(@RequestBody UserPostDTO userPostDTO) {
       // convert API user to internal representation
@@ -65,17 +65,17 @@ public class UserController {
       System.out.println(userInput.getPassword());
 
       // authenticate user
-      User createdUser = userService.authanticateUser(userInput);
+      User authenticatedUser = userService.authanticateUser(userInput);
 
       // convert internal representation of user back to API
-      return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+      return DTOMapper.INSTANCE.convertEntityToUserGetDTO(authenticatedUser);
     }
 
   @PutMapping("/logout/{userId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public void logout(@PathVariable("userId") Long userId){
-      // convert API user to internal representation
+      // get the User from its ID
       User user = userService.getUserByIDNum(userId);
       userService.logout(user);
   }
@@ -91,17 +91,17 @@ public class UserController {
     }
 
   @PutMapping("/users/{userId}")
-  @ResponseStatus(HttpStatus.OK)
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   @ResponseBody
   public void updateUserFromUserID(@PathVariable("userId") Long userId, @RequestBody UserPostDTO userPostDTO){
       User usertoUpdate = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
-      User userByURI = userService.getUserByIDNum(userId);
+      User profileUserId = userService.getUserByIDNum(userId);
 
-      User userByLogin = userService.getUserByIDNum(usertoUpdate.getId());
+      User accountUserId = userService.getUserByIDNum(usertoUpdate.getId());
 
-      System.out.println("userByLogin: " + userByLogin);
+      userService.compareUserByID(profileUserId.getId(),accountUserId.getId());
 
-      //userService.updateUsernameAndBirthday(usertoUpdate);
+      userService.updateUsernameAndBirthday(profileUserId,usertoUpdate);
     }
 }
