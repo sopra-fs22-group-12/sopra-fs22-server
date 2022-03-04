@@ -53,4 +53,33 @@ public class UserRepositoryIntegrationTest {
     assertEquals(found.getToken(), user.getToken());
     assertEquals(found.getStatus(), user.getStatus());
   }
+  @Test
+  public void findByUsername_success() {
+      // given
+      User user = new User();
+      user.setName("Firstname Lastname");
+      user.setUsername("firstname@lastname");
+      user.setPassword("password");
+      user.setStatus(UserStatus.OFFLINE);
+      user.setToken("1");
+      DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+      Date today = Calendar.getInstance().getTime();
+      //String reportDate = df.format(today);
+      user.setDate(today);
+
+      entityManager.persist(user);
+      entityManager.flush();
+
+      // when
+      User found = userRepository.findByUsername(user.getUsername());
+
+      // then
+      assertNotNull(found.getId());
+      assertEquals(found.getName(), user.getName());
+      assertEquals(found.getUsername(), user.getUsername());
+      assertEquals(found.getPassword(), user.getPassword());
+      assertEquals(found.getDate(),user.getDate());
+      assertEquals(found.getToken(), user.getToken());
+      assertEquals(found.getStatus(), user.getStatus());
+    }
 }
