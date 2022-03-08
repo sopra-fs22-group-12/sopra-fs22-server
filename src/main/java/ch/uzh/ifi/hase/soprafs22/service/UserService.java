@@ -46,6 +46,7 @@ public class UserService {
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.ONLINE);
+    newUser.setLoggedIn(true);
 
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     Date today = Calendar.getInstance().getTime();
@@ -82,6 +83,7 @@ public class UserService {
       }
       System.out.println(userByUsername.getToken());
       userByUsername.setStatus(UserStatus.ONLINE);
+      userByUsername.setLoggedIn(true);
       updateRepository(userByUsername);
       /**userRepository.save(newUser);
       userRepository.flush();*/
@@ -96,6 +98,7 @@ public class UserService {
 
   public void logout(User userToLogout){
       userToLogout.setStatus(UserStatus.OFFLINE);
+      userToLogout.setLoggedIn(false);
       updateRepository(userToLogout);
   }
 
