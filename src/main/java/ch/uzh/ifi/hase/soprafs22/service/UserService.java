@@ -46,6 +46,7 @@ public class UserService {
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.ONLINE);
+    newUser.setLoggedIn(true);
 
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     Date today = Calendar.getInstance().getTime();
@@ -81,7 +82,9 @@ public class UserService {
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Password is incorrect"));
       }
       System.out.println(userByUsername.getToken());
+      userByUsername.setToken(UUID.randomUUID().toString());
       userByUsername.setStatus(UserStatus.ONLINE);
+      userByUsername.setLoggedIn(true);
       updateRepository(userByUsername);
       /**userRepository.save(newUser);
       userRepository.flush();*/
@@ -96,6 +99,7 @@ public class UserService {
 
   public void logout(User userToLogout){
       userToLogout.setStatus(UserStatus.OFFLINE);
+      userToLogout.setLoggedIn(false);
       updateRepository(userToLogout);
   }
 
@@ -114,8 +118,8 @@ public class UserService {
 
   }
 
-  public void compareUserByID(Long profileUserId, Long accountUserId){
-      if (!profileUserId.equals(accountUserId)){
+  public void compareUserByToken(String profileUserToken, String accountUserToken){
+      if (!("Basic "+ profileUserToken).equals(accountUserToken)){
           throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format("Unauthorized for the update"));
       }
   }

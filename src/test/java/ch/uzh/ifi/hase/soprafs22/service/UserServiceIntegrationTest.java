@@ -188,7 +188,7 @@ public class UserServiceIntegrationTest {
   }
   @Test
   public void compareUserByID_differentID(){
-      assertThrows(ResponseStatusException.class, ()-> userService.compareUserByID(1L,2L));
+      assertThrows(ResponseStatusException.class, ()-> userService.compareUserByToken("1L","2L"));
   }
   /**
   @Test

@@ -37,7 +37,8 @@ public class UserController {
 
     // convert each user to the API representation
     for (User user : users) {
-      userGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
+        user.setToken(null);
+        userGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
     }
     return userGetDTOs;
   }
@@ -53,7 +54,7 @@ public class UserController {
     User createdUser = userService.createUser(userInput);
 
     // convert internal representation of user back to API
-    return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+    return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);//.setHeader("token", createdUser.getToken());
   }
   @PutMapping("/user/login")
   @ResponseStatus(HttpStatus.OK)
@@ -93,14 +94,17 @@ public class UserController {
   @PutMapping("/users/{userId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @ResponseBody
-  public void updateUserFromUserID(@PathVariable("userId") Long userId, @RequestBody UserPostDTO userPostDTO){
+  public void updateUserFromUserID(@PathVariable("userId") Long userId, @RequestBody UserPostDTO userPostDTO, @RequestHeader("Authorization") String Token){
       User usertoUpdate = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+
+      //User accountUserToken = userService.getUserByToken(Token);
+      System.out.println(Token);
 
       User profileUserId = userService.getUserByIDNum(userId);
 
-      User accountUserId = userService.getUserByIDNum(usertoUpdate.getId());
+      //User accountUserId = userService.getUserByIDNum(usertoUpdate.getId());
 
-      userService.compareUserByID(profileUserId.getId(),accountUserId.getId());
+      userService.compareUserByToken(profileUserId.getToken(),Token);
 
       userService.updateUsernameAndBirthday(profileUserId,usertoUpdate);
     }

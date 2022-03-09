@@ -32,6 +32,7 @@ public class UserRepositoryIntegrationTest {
     user.setUsername("firstname@lastname");
     user.setPassword("password");
     user.setStatus(UserStatus.OFFLINE);
+    user.setLoggedIn(false);
     user.setToken("1");
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     Date today = Calendar.getInstance().getTime();
@@ -52,6 +53,7 @@ public class UserRepositoryIntegrationTest {
     assertEquals(found.getDate(),user.getDate());
     assertEquals(found.getToken(), user.getToken());
     assertEquals(found.getStatus(), user.getStatus());
+    assertEquals(found.getLoggedIn(), user.getLoggedIn());
   }
   @Test
   public void findByUsername_success() {
@@ -61,6 +63,7 @@ public class UserRepositoryIntegrationTest {
       user.setUsername("firstname@lastname");
       user.setPassword("password");
       user.setStatus(UserStatus.OFFLINE);
+      user.setLoggedIn(false);
       user.setToken("1");
       DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
       Date today = Calendar.getInstance().getTime();
@@ -81,5 +84,6 @@ public class UserRepositoryIntegrationTest {
       assertEquals(found.getDate(),user.getDate());
       assertEquals(found.getToken(), user.getToken());
       assertEquals(found.getStatus(), user.getStatus());
+      assertEquals(found.getLoggedIn(), user.getLoggedIn());
     }
 }

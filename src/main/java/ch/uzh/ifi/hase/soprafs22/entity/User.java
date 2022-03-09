@@ -42,6 +42,9 @@ public class User implements Serializable {
   private UserStatus status;
 
   @Column(nullable = false)
+  private Boolean loggedIn;
+
+  @Column(nullable = false)
   @Temporal(TemporalType.DATE)
   private Date date;
 
@@ -96,6 +99,14 @@ public class User implements Serializable {
   public void setStatus(UserStatus status) {
     this.status = status;
   }
+
+    public Boolean getLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn(Boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
 
     public Date getDate() {
         return date;
