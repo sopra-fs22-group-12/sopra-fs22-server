@@ -187,7 +187,6 @@ public class UserControllerTest {
 
       UserPostDTO userPostDTO = new UserPostDTO();
       userPostDTO.setUsername("testingUsername");
-      userPostDTO.setId(1L);
       userPostDTO.setBirthday(Calendar.getInstance().getTime());
 
       given(userService.getUserByIDNum(Mockito.any())).willReturn(user);
@@ -195,7 +194,8 @@ public class UserControllerTest {
       //when
       MockHttpServletRequestBuilder putRequest = put("/users/1")
               .contentType(MediaType.APPLICATION_JSON)
-              .content(asJsonString(userPostDTO));
+              .content(asJsonString(userPostDTO))
+              .header("Authorization",user.getToken());
 
       //then
       mockMvc.perform(putRequest).andExpect(status().isNoContent()); //check for change

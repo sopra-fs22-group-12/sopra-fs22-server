@@ -169,6 +169,6 @@ public class UserServiceTest {
 
   @Test
   public void compareUserByID_mismatchingID_fail(){
-    assertThrows(ResponseStatusException.class, () -> userService.compareUserByID(1L,2L));
+    assertThrows(ResponseStatusException.class, () -> userService.compareUserByToken("1L","2L"));
   }
 }
