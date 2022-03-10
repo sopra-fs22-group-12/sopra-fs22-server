@@ -50,7 +50,7 @@ public class User implements Serializable {
 
   @Column()
   @Temporal(TemporalType.DATE)
-  private Date birthday; //change both dates to localDate
+  private Date birthday;
 
   public Long getId() {
     return id;

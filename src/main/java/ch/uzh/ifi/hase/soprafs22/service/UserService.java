@@ -50,13 +50,10 @@ public class UserService {
 
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     Date today = Calendar.getInstance().getTime();
-    //String reportDate = df.format(today);
     newUser.setDate(today);
-      //System.out.println(today);
 
     checkNullPassword(newUser);
     String hashedPassword = hashPassword(newUser.getPassword());
-      System.out.println("Hashed Password: "+hashedPassword);
     newUser.setPassword(hashedPassword);
     checkIfUserExists(newUser);
 
@@ -81,13 +78,12 @@ public class UserService {
           System.out.println("From Frontend: " + newUser.getPassword());
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Password is incorrect"));
       }
-      System.out.println(userByUsername.getToken());
+      //updates the changes
       userByUsername.setToken(UUID.randomUUID().toString());
       userByUsername.setStatus(UserStatus.ONLINE);
       userByUsername.setLoggedIn(true);
+      //does the flushing and saving
       updateRepository(userByUsername);
-      /**userRepository.save(newUser);
-      userRepository.flush();*/
       return userByUsername;
   }
 
@@ -119,20 +115,16 @@ public class UserService {
   }
 
   public void compareUserByToken(String profileUserToken, String accountUserToken){
-      if (!("Basic "+ profileUserToken).equals(accountUserToken)){
+      if (!("Bearer "+ profileUserToken).equals(accountUserToken)){
           throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format("Unauthorized for the update"));
       }
   }
 
   public void updateUsernameAndBirthday(User userProfile, User userRequestChange){
       userProfile.setUsername(userRequestChange.getUsername());
-      System.out.println(userRequestChange.getBirthday());
-      //UserToUpdateInDB.getBirthday();
       if(userRequestChange.getBirthday() != null){
         userProfile.setBirthday(userRequestChange.getBirthday());
       }
-      System.out.println(userProfile.getBirthday());
-      //System.out.println(userProfile.getBirthday().getClass().getName());
       updateRepository(userProfile);
   }
 
