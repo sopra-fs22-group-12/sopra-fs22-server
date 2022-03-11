@@ -102,6 +102,39 @@ public class UserControllerTest {
         .andExpect(jsonPath("$.creation_date", is(user.getCreationDate())))
         .andExpect(jsonPath("$.birthday", is(user.getBirthday())));
   }
+    @Test
+    public void createUserOnlyUsername_validInput_userCreated() throws Exception {
+        // given
+        User user = new User();
+        user.setId(1L);
+        user.setName("TestUsername");
+        user.setUsername("testUsername");
+        user.setPassword("password");
+        user.setToken("1");
+        user.setLoggedIn(false);
+
+        UserPostDTO userPostDTO = new UserPostDTO();
+        //userPostDTO.setName("Test User");
+        userPostDTO.setUsername("testUsername");
+        userPostDTO.setPassword("password");
+
+        given(userService.createUser(Mockito.any())).willReturn(user);
+
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder postRequest = post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", is(user.getId().intValue())))
+                .andExpect(jsonPath("$.name", is(user.getName())))
+                .andExpect(jsonPath("$.username", is(user.getUsername())))
+                .andExpect(jsonPath("$.logged_in", is(user.getLoggedIn())))
+                .andExpect(jsonPath("$.creation_date", is(user.getCreationDate())))
+                .andExpect(jsonPath("$.birthday", is(user.getBirthday())));
+    }
   @Test
   public void authenticateUser_validInput_userAuthenticated() throws Exception {
       User user = new User();

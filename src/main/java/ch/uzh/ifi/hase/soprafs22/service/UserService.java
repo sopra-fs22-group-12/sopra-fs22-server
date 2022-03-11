@@ -47,6 +47,10 @@ public class UserService {
     newUser.setStatus(UserStatus.ONLINE);
     newUser.setLoggedIn(true);
 
+    if (newUser.getName() == null){
+        newUser.setName(newUser.getUsername());
+    }
+
     //creates the creation date form today
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     Date today = Calendar.getInstance().getTime();
