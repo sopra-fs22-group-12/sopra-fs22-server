@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -48,10 +47,12 @@ public class UserService {
     newUser.setStatus(UserStatus.ONLINE);
     newUser.setLoggedIn(true);
 
+    //creates the creation date form today
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     Date today = Calendar.getInstance().getTime();
-    newUser.setDate(today);
+    newUser.setCreationDate(today);
 
+    //password and Username/Name check
     checkNullPassword(newUser);
     String hashedPassword = hashPassword(newUser.getPassword());
     newUser.setPassword(hashedPassword);
@@ -68,10 +69,12 @@ public class UserService {
 
 
   public User authanticateUser(User newUser) {
+      //find user
       User userByUsername = userRepository.findByUsername(newUser.getUsername());
       if(userByUsername == null){
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Username not found"));
       }
+      //check for the correct password
       String hashedNewUserPassword = hashPassword(newUser.getPassword());
       if(!userByUsername.getPassword().equals(hashedNewUserPassword) ){
           System.out.println("From Database: " + userByUsername.getPassword());
@@ -121,6 +124,7 @@ public class UserService {
   }
 
   public void updateUsernameAndBirthday(User userProfile, User userRequestChange){
+      //update the Profile fields
       userProfile.setUsername(userRequestChange.getUsername());
       if(userRequestChange.getBirthday() != null){
         userProfile.setBirthday(userRequestChange.getBirthday());

@@ -37,7 +37,7 @@ public class UserRepositoryIntegrationTest {
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     Date today = Calendar.getInstance().getTime();
     //String reportDate = df.format(today);
-    user.setDate(today);
+    user.setCreationDate(today);
 
     entityManager.persist(user);
     entityManager.flush();
@@ -50,7 +50,7 @@ public class UserRepositoryIntegrationTest {
     assertEquals(found.getName(), user.getName());
     assertEquals(found.getUsername(), user.getUsername());
     assertEquals(found.getPassword(), user.getPassword());
-    assertEquals(found.getDate(),user.getDate());
+    assertEquals(found.getCreationDate(),user.getCreationDate());
     assertEquals(found.getToken(), user.getToken());
     assertEquals(found.getStatus(), user.getStatus());
     assertEquals(found.getLoggedIn(), user.getLoggedIn());
@@ -68,7 +68,7 @@ public class UserRepositoryIntegrationTest {
       DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
       Date today = Calendar.getInstance().getTime();
       //String reportDate = df.format(today);
-      user.setDate(today);
+      user.setCreationDate(today);
 
       entityManager.persist(user);
       entityManager.flush();
@@ -81,7 +81,7 @@ public class UserRepositoryIntegrationTest {
       assertEquals(found.getName(), user.getName());
       assertEquals(found.getUsername(), user.getUsername());
       assertEquals(found.getPassword(), user.getPassword());
-      assertEquals(found.getDate(),user.getDate());
+      assertEquals(found.getCreationDate(),user.getCreationDate());
       assertEquals(found.getToken(), user.getToken());
       assertEquals(found.getStatus(), user.getStatus());
       assertEquals(found.getLoggedIn(), user.getLoggedIn());
