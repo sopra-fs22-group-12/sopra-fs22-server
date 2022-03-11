@@ -20,8 +20,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -65,7 +64,9 @@ public class UserControllerTest {
         .andExpect(jsonPath("$", hasSize(1)))
         .andExpect(jsonPath("$[0].name", is(user.getName())))
         .andExpect(jsonPath("$[0].username", is(user.getUsername())))
-        .andExpect(jsonPath("$[0].loggedIn", is(user.getLoggedIn())));
+        .andExpect(jsonPath("$[0].logged_in", is(user.getLoggedIn())))
+        .andExpect(jsonPath("$[0].creation_date", is(user.getCreationDate())))
+        .andExpect(jsonPath("[0].birthday", is(user.getBirthday())));
   }
 
   @Test
@@ -97,7 +98,9 @@ public class UserControllerTest {
         .andExpect(jsonPath("$.id", is(user.getId().intValue())))
         .andExpect(jsonPath("$.name", is(user.getName())))
         .andExpect(jsonPath("$.username", is(user.getUsername())))
-        .andExpect(jsonPath("$.loggedIn", is(user.getLoggedIn())));
+        .andExpect(jsonPath("$.logged_in", is(user.getLoggedIn())))
+        .andExpect(jsonPath("$.creation_date", is(user.getCreationDate())))
+        .andExpect(jsonPath("$.birthday", is(user.getBirthday())));
   }
   @Test
   public void authenticateUser_validInput_userAuthenticated() throws Exception {
@@ -126,8 +129,10 @@ public class UserControllerTest {
               .andExpect(jsonPath("$.id", is(user.getId().intValue())))
               .andExpect(jsonPath("$.name", is(user.getName())))
               .andExpect(jsonPath("$.username", is(user.getUsername())))
-              .andExpect(jsonPath("$.loggedIn", is(user.getLoggedIn())));
-              //.andExpect(jsonPath("$.token",is(user.getToken())));
+              .andExpect(jsonPath("$.logged_in", is(user.getLoggedIn())))
+              .andExpect(jsonPath("$.creation_date", is(user.getCreationDate())))
+              .andExpect(jsonPath("$.birthday", is(user.getBirthday())));
+
   }
 
   @Test
@@ -201,10 +206,10 @@ public class UserControllerTest {
       given(userService.getUserByIDNum(Mockito.any())).willReturn(user);
 
       //when
-      MockHttpServletRequestBuilder postRequest = post("/logout/1").contentType(MediaType.APPLICATION_JSON);
+      MockHttpServletRequestBuilder putRequest = put("/logout/1").contentType(MediaType.APPLICATION_JSON);
 
       //then
-      mockMvc.perform(postRequest).andExpect(status().isOk()); //check status
+      mockMvc.perform(putRequest).andExpect(status().isCreated()); //check status
   }
 
   @Test
@@ -228,8 +233,9 @@ public class UserControllerTest {
               .andExpect(jsonPath("$.id", is(user.getId().intValue())))
               .andExpect(jsonPath("$.name", is(user.getName())))
               .andExpect(jsonPath("$.username", is(user.getUsername())))
-              .andExpect(jsonPath("$.loggedIn", is(user.getLoggedIn())));
-              //.andExpect(jsonPath("$.token",is(user.getToken())));
+              .andExpect(jsonPath("$.logged_in", is(user.getLoggedIn())))
+              .andExpect(jsonPath("$.creation_date", is(user.getCreationDate())))
+              .andExpect(jsonPath("$.birthday", is(user.getBirthday())));
   }
   @Test
   public void updateUserFromUserID_validInput() throws Exception {
@@ -255,6 +261,35 @@ public class UserControllerTest {
 
       //then
       mockMvc.perform(putRequest).andExpect(status().isNoContent()); //check for change
+  }
+  @Test
+  public void updateUser_invaildInput() throws Exception {
+      User user = new User();
+      user.setId(1L);
+      user.setName("Test User");
+      user.setUsername("testUsername");
+      user.setPassword("password");
+      user.setToken("1");
+      user.setLoggedIn(false);
+
+      UserPostDTO userPostDTO = new UserPostDTO();
+      userPostDTO.setUsername("testingUsername");
+      userPostDTO.setBirthday(Calendar.getInstance().getTime());
+
+      given(userService.getUserByIDNum(Mockito.any())).willReturn(user);
+
+      //when
+      MockHttpServletRequestBuilder putRequest = put("/users/1")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(asJsonString(userPostDTO))
+              .header("Authorization",user.getToken());
+
+      doThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized for the update"))
+              .when(userService).compareUserByToken(Mockito.any(),Mockito.any());
+
+      // then
+      mockMvc.perform(putRequest)
+              .andExpect(status().isUnauthorized());
   }
 
   /**

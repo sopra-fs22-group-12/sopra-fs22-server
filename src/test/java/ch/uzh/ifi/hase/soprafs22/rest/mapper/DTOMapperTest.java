@@ -6,8 +6,6 @@ import ch.uzh.ifi.hase.soprafs22.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.dto.UserPostDTO;
 import org.junit.jupiter.api.Test;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -52,7 +50,7 @@ public class DTOMapperTest {
     user.setStatus(UserStatus.OFFLINE);
     user.setToken("1");
     user.setId(1L);
-    user.setDate(today);
+    user.setCreationDate(today);
     user.setBirthday(today);
 
     // MAP -> Create UserGetDTO
@@ -64,7 +62,7 @@ public class DTOMapperTest {
     assertEquals(user.getUsername(), userGetDTO.getUsername());
     assertEquals(user.getLoggedIn(), userGetDTO.getLoggedIn());
     //assertEquals(user.getStatus(), userGetDTO.getStatus());
-    assertEquals(user.getDate(), userGetDTO.getDate());
+    assertEquals(user.getCreationDate(), userGetDTO.getCreationDate());
     assertEquals(user.getBirthday(), userGetDTO.getBirthday());
   }
 }

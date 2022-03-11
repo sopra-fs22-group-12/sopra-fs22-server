@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs22.rest.dto;
 
-import ch.uzh.ifi.hase.soprafs22.constant.UserStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
@@ -10,10 +9,10 @@ public class UserGetDTO {
     private Long id;
     private String name;
     private String username;
-    //@JsonProperty("logged_in")
+    @JsonProperty("logged_in")
     private Boolean loggedIn;
-    //@JsonProperty("creation_date")
-    private Date date;
+    @JsonProperty("creation_date")
+    private Date creationDate;
     private Date birthday;
 
     public Long getId() {
@@ -49,12 +48,12 @@ public class UserGetDTO {
     }
 
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getCreationDate() {
+        return creationDate;
     }
 
     public void setBirthday(Date birthday) {

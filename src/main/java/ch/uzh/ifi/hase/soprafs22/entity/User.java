@@ -46,7 +46,7 @@ public class User implements Serializable {
 
   @Column(nullable = false)
   @Temporal(TemporalType.DATE)
-  private Date date;
+  private Date creationDate;
 
   @Column()
   @Temporal(TemporalType.DATE)
@@ -108,12 +108,12 @@ public class User implements Serializable {
         this.loggedIn = loggedIn;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getCreationDate() {
+        return creationDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     public Date getBirthday() {
