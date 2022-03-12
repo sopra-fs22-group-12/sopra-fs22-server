@@ -167,6 +167,11 @@ public class UserServiceTest {
     assertThrows(ResponseStatusException.class, () -> userService.getUserByIDNum(testUser.getId()));
   }
 
+    @Test
+    public void checkTokenExistence_nullToken_fail(){
+        assertThrows(ResponseStatusException.class, () -> userService.checkTokenExists(null));
+    }
+
   @Test
   public void compareUserByID_mismatchingToken_fail(){
     assertThrows(ResponseStatusException.class, () -> userService.compareUserByToken("1L","2L"));

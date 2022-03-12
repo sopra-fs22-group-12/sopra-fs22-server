@@ -89,7 +89,10 @@ public class UserController {
   @GetMapping("/users/{userId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public UserGetDTO getUserFromUserID(@PathVariable("userId") Long userId){
+  public UserGetDTO getUserFromUserID(@PathVariable("userId") Long userId, @RequestHeader("Authorization") String Token){
+      //check if token exists
+      userService.checkTokenExists(Token);
+
       // get the User from its ID
       User user = userService.getUserByIDNum(userId);
 

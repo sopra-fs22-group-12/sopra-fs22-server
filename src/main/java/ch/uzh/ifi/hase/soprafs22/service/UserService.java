@@ -47,6 +47,10 @@ public class UserService {
     newUser.setStatus(UserStatus.ONLINE);
     newUser.setLoggedIn(true);
 
+    if (newUser.getName() == null){
+        newUser.setName(newUser.getUsername());
+    }
+
     //creates the creation date form today
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     Date today = Calendar.getInstance().getTime();
@@ -115,6 +119,12 @@ public class UserService {
       }
       return user;
 
+  }
+
+  public void checkTokenExists(String token) {
+      if (token == null){
+          throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format("Unauthorized for this entry"));
+      }
   }
 
   public void compareUserByToken(String profileUserToken, String accountUserToken){
