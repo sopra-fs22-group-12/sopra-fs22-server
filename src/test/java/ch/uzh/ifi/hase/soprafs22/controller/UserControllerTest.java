@@ -102,8 +102,8 @@ public class UserControllerTest {
         .andExpect(jsonPath("$.creation_date", is(user.getCreationDate())))
         .andExpect(jsonPath("$.birthday", is(user.getBirthday())));
   }
-    @Test
-    public void createUserOnlyUsername_validInput_userCreated() throws Exception {
+  @Test
+  public void createUserOnlyUsername_validInput_userCreated() throws Exception {
         // given
         User user = new User();
         user.setId(1L);
@@ -134,7 +134,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.logged_in", is(user.getLoggedIn())))
                 .andExpect(jsonPath("$.creation_date", is(user.getCreationDate())))
                 .andExpect(jsonPath("$.birthday", is(user.getBirthday())));
-    }
+  }
   @Test
   public void authenticateUser_validInput_userAuthenticated() throws Exception {
       User user = new User();
@@ -258,7 +258,9 @@ public class UserControllerTest {
       given(userService.getUserByIDNum(Mockito.any())).willReturn(user);
 
       // when/then -> do the request + validate the result
-      MockHttpServletRequestBuilder getRequest = get("/users/1").contentType(MediaType.APPLICATION_JSON);
+      MockHttpServletRequestBuilder getRequest = get("/users/1")
+              .contentType(MediaType.APPLICATION_JSON)
+              .header("Authorization",user.getToken());;
 
       // then
       mockMvc.perform(getRequest)

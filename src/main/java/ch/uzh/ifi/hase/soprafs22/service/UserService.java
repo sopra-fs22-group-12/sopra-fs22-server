@@ -121,6 +121,12 @@ public class UserService {
 
   }
 
+  public void checkTokenExists(String token) {
+      if (token == null){
+          throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format("Unauthorized for this entry"));
+      }
+  }
+
   public void compareUserByToken(String profileUserToken, String accountUserToken){
       if (!("Bearer "+ profileUserToken).equals(accountUserToken)){
           throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format("Unauthorized for the update"));
