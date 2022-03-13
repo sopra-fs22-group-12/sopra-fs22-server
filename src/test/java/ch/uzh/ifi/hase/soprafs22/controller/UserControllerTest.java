@@ -49,6 +49,7 @@ public class UserControllerTest {
     user.setUsername("firstname@lastname");
     user.setUsername("password");
     user.setLoggedIn(false);
+    user.setId(1L);
 
     List<User> allUsers = Collections.singletonList(user);
 
@@ -62,6 +63,7 @@ public class UserControllerTest {
     // then
     mockMvc.perform(getRequest).andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(1)))
+        .andExpect(jsonPath("$[0].id", is(user.getId().intValue())))
         .andExpect(jsonPath("$[0].name", is(user.getName())))
         .andExpect(jsonPath("$[0].username", is(user.getUsername())))
         .andExpect(jsonPath("$[0].logged_in", is(user.getLoggedIn())))
@@ -107,7 +109,7 @@ public class UserControllerTest {
         // given
         User user = new User();
         user.setId(1L);
-        user.setName("TestUsername");
+        user.setName("testUsername");
         user.setUsername("testUsername");
         user.setPassword("password");
         user.setToken("1");
@@ -242,7 +244,7 @@ public class UserControllerTest {
       MockHttpServletRequestBuilder putRequest = put("/logout/1").contentType(MediaType.APPLICATION_JSON);
 
       //then
-      mockMvc.perform(putRequest).andExpect(status().isCreated()); //check status
+      mockMvc.perform(putRequest).andExpect(status().isNoContent()); //check status
   }
 
   @Test

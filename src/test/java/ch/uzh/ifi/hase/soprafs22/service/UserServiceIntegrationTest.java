@@ -53,12 +53,12 @@ public class UserServiceIntegrationTest {
       List<User> userList = userService.getUsers();
 
       // then
-      assertEquals(testUser.getId(), userList.get(0).getId());
-      assertEquals(testUser.getName(), userList.get(0).getName());
-      assertEquals(testUser.getUsername(), userList.get(0).getUsername());
-      assertEquals(testUser.getPassword(),userList.get(0).getPassword());
+      assertEquals(createdUser.getId(), userList.get(0).getId());
+      assertEquals(createdUser.getName(), userList.get(0).getName());
+      assertEquals(createdUser.getUsername(), userList.get(0).getUsername());
+      assertEquals(createdUser.getPassword(),userList.get(0).getPassword());
       assertNotNull(userList.get(0).getToken());
-      assertEquals(UserStatus.ONLINE, userList.get(0).getStatus());
+      assertEquals(createdUser.getLoggedIn(), userList.get(0).getLoggedIn());
   }
 
   @Test
@@ -80,7 +80,7 @@ public class UserServiceIntegrationTest {
     assertEquals(testUser.getUsername(), createdUser.getUsername());
     assertEquals(testUser.getPassword(),createdUser.getPassword());
     assertNotNull(createdUser.getToken());
-    assertEquals(UserStatus.ONLINE, createdUser.getStatus());
+    assertEquals(true, createdUser.getLoggedIn());
   }
 
   @Test
@@ -128,6 +128,7 @@ public class UserServiceIntegrationTest {
       assertEquals(testUser.getPassword(),authenticatedUser.getPassword());
       assertNotNull(createdUser.getToken());
       assertEquals(UserStatus.ONLINE, authenticatedUser.getStatus());
+      assertEquals(true,authenticatedUser.getLoggedIn());
   }
   @Test
   public void logout_validUser_success(){
@@ -149,6 +150,7 @@ public class UserServiceIntegrationTest {
       assertEquals(testUser.getPassword(),createdUser.getPassword());
       assertNotNull(createdUser.getToken());
       assertEquals(UserStatus.OFFLINE, createdUser.getStatus());
+      assertEquals(false,createdUser.getLoggedIn());
   }
   @Test
   public void getUserByIDNum_validLond_success(){
@@ -170,6 +172,7 @@ public class UserServiceIntegrationTest {
       assertEquals(testUser.getPassword(), userByIDNum.getPassword());
       assertNotNull(createdUser.getToken());
       assertEquals(UserStatus.ONLINE, userByIDNum.getStatus());
+      assertEquals(true,userByIDNum.getLoggedIn());
   }
   @Test
   public void getUserByIDNum_invalidLong_fail(){
@@ -190,6 +193,7 @@ public class UserServiceIntegrationTest {
   public void compareUserByID_differentID(){
       assertThrows(ResponseStatusException.class, ()-> userService.compareUserByToken("1L","2L"));
   }
+
   /**
   @Test
   public void updateUsernameAndBirthday_success(){

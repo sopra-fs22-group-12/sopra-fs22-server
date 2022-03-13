@@ -77,7 +77,7 @@ public class UserController {
     }
 
   @PutMapping("/logout/{userId}")
-  @ResponseStatus(HttpStatus.CREATED)
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   @ResponseBody
   public void logout(@PathVariable("userId") Long userId){
       // get the User from its ID
