@@ -60,6 +60,7 @@ public class UserServiceTest {
       assertEquals(testUser.getUsername(), testListOfUsers.get(0).getUsername());
       assertNotNull(testListOfUsers.get(0).getToken());
       assertEquals(UserStatus.ONLINE, testListOfUsers.get(0).getStatus());
+      assertEquals(true, testListOfUsers.get(0).getLoggedIn());
   }
 
   @Test
@@ -76,6 +77,7 @@ public class UserServiceTest {
     assertEquals(testUser.getUsername(), createdUser.getUsername());
     assertNotNull(createdUser.getToken());
     assertEquals(UserStatus.ONLINE, createdUser.getStatus());
+    assertEquals(true, createdUser.getLoggedIn());
   }
 
   @Test
@@ -126,6 +128,7 @@ public class UserServiceTest {
     assertEquals(testUser.getUsername(), authenticatedUser.getUsername());
     assertNotNull(authenticatedUser.getToken());
     assertEquals(UserStatus.ONLINE, authenticatedUser.getStatus());
+    assertEquals(true, authenticatedUser.getLoggedIn());
   }
   @Test
   public void authenticateUser_wrongPassword_fail(){
@@ -159,6 +162,7 @@ public class UserServiceTest {
     assertEquals(testUser.getUsername(), userId.getUsername());
     assertNotNull(userId.getToken());
     assertEquals(UserStatus.ONLINE, userId.getStatus());
+    assertEquals(true, userId.getLoggedIn());
   }
   @Test
   public void getUserByID_invalidID_fail(){
@@ -166,12 +170,19 @@ public class UserServiceTest {
 
     assertThrows(ResponseStatusException.class, () -> userService.getUserByIDNum(testUser.getId()));
   }
-
+    @Test
+    public void checkTokenExists_stringToken_success(){
+      userService.checkTokenExists("2");
+    }
     @Test
     public void checkTokenExistence_nullToken_fail(){
         assertThrows(ResponseStatusException.class, () -> userService.checkTokenExists(null));
     }
 
+    @Test
+    public void compareUserByToken_validToken(){
+        userService.compareUserByToken("1","Bearer 1");
+    }
   @Test
   public void compareUserByID_mismatchingToken_fail(){
     assertThrows(ResponseStatusException.class, () -> userService.compareUserByToken("1L","2L"));

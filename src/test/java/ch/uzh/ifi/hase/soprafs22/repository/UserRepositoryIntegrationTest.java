@@ -54,6 +54,7 @@ public class UserRepositoryIntegrationTest {
     assertEquals(found.getToken(), user.getToken());
     assertEquals(found.getStatus(), user.getStatus());
     assertEquals(found.getLoggedIn(), user.getLoggedIn());
+    assertEquals(found.getBirthday(), user.getBirthday());
   }
   @Test
   public void findByUsername_success() {
@@ -85,5 +86,6 @@ public class UserRepositoryIntegrationTest {
       assertEquals(found.getToken(), user.getToken());
       assertEquals(found.getStatus(), user.getStatus());
       assertEquals(found.getLoggedIn(), user.getLoggedIn());
+      assertEquals(found.getBirthday(), user.getBirthday());
     }
 }
