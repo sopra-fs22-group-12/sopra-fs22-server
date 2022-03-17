@@ -14,7 +14,7 @@ import java.util.Date;
  * annotation
  * - nullable = false -> this cannot be left empty
  * - unique = true -> this value must be unqiue across the database -> composes
- * the primary key
+ * the primary key.
  */
 @Entity
 @Table(name = "USER")
