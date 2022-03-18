@@ -134,7 +134,7 @@ public class UserService {
   }
 
   public void updateUsernameAndBirthday(User userProfile, User userRequestChange){
-      //update the Profile fields
+      //update the Profile fields.
       userProfile.setUsername(userRequestChange.getUsername());
       if(userRequestChange.getBirthday() != null){
         userProfile.setBirthday(userRequestChange.getBirthday());
